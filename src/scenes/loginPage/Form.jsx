@@ -7,6 +7,8 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -50,12 +52,20 @@ const initialValuesLogin = {
 const Form = () => {
   const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
+  const [message,setMessage] = useState("")
+  const [open,setOpen] = useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
-
+  const handleOnOpen = (message)=>{
+    setOpen(true)
+    setMessage(message)
+  }
+  const handleOnClose = ()=>{
+    setOpen(false)
+  }
   const register = async (values, onSubmitProps) => {
     const formData = new FormData();
     for (let value in values) {
@@ -63,23 +73,29 @@ const Form = () => {
     }
     const form_value = [...formData.entries()];
     console.log(form_value)
-    const savedUserResponse = await AxiosInstance.post("/auth/registry",formData,{
-      headers:{ 'Content-Type':"multipart/form-data"}
-    });
-    console.log(savedUserResponse)
-    onSubmitProps.resetForm();
-
-    if (savedUserResponse.status ===200) {
-      setPageType("login");
+    try{
+      const savedUserResponse = await AxiosInstance.post("/auth/registry",formData,{
+        headers:{ 'Content-Type':"multipart/form-data"}
+      });
+      console.log(savedUserResponse)
+      onSubmitProps.resetForm();
+  
+      if (savedUserResponse.status ==200) {
+        setPageType("login");
+      }
+    }catch(e){
+      console.log(e)
+      handleOnOpen(e.response.data.message)
     }
+    
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await AxiosInstance.post("/auth/login", values,{
-      headers:{"Content-Type":"application/json"}
-    });
-    onSubmitProps.resetForm();
-    if (loggedInResponse.status==200) {
+    try{
+      const loggedInResponse = await AxiosInstance.post("/auth/login", values,{
+        headers:{"Content-Type":"application/json"}
+      });
+      onSubmitProps.resetForm();
       console.log(loggedInResponse)
       dispatch(
         setLogin({
@@ -89,6 +105,8 @@ const Form = () => {
         })
       );
       navigate("/home");
+    }catch(e){
+      handleOnOpen(e.response.data.message)
     }
   };
 
@@ -114,6 +132,20 @@ const Form = () => {
         resetForm,
       }) => (
         <form onSubmit={handleSubmit}>
+          <Snackbar
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleOnClose}
+          >
+            <Alert
+              onClose={handleOnClose}
+              sx={{width:'100%'}}
+              severity="error"
+              variant="filled"
+            >
+              {message}
+            </Alert>
+          </Snackbar>
           <Box
             display="grid"
             gap="30px"

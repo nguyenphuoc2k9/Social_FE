@@ -67,6 +67,7 @@ const PostWidget = ({
         name={name}
         postId={postId}
         isProfile ={isProfile}
+        isUser = {postUserId == loggedInUserId}
         handleClickOpen={handleClickOpen}
         subtitle={location}
         userPicturePath={userPicturePath}

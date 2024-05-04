@@ -2,6 +2,7 @@ import { Box, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { setUser } from "../../state/index.js";
 import Navbar from "../navbar/index.jsx";
 import FriendListWidget from "../widgets/FriendListWidget.jsx";
 import MyPostWidget from "../widgets/MyPostWidget.jsx";
@@ -25,11 +26,10 @@ const ProfilePage = () => {
       setType({postId:e.postId,type:e.type})
     }
   };
-
+  
   const handleClose = () => {
     setOpen(false);
   };
-  const currentUser = useSelector((state)=>state.user)._id === userId
   const getUser = async () => {
     const response = await AxiosInstance.get(`/users/${userId}`)
     const data = response.data
@@ -38,7 +38,8 @@ const ProfilePage = () => {
 
   useEffect(() => {
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    
+  }, [])
 
   if (!user) return null;
 

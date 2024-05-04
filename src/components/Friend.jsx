@@ -7,7 +7,7 @@ import FlexBetween from "./FlexBetween.jsx";
 import UserImage from "./UserImage.jsx";
 import { AxiosInstance } from "../api/axios.js";
 import SettingsIcon from '@mui/icons-material/Settings';
-const Friend = ({ friendId, postId,name, subtitle, userPicturePath,isProfile,handleClickOpen }) => {
+const Friend = ({ friendId, postId,name,isUser, subtitle, userPicturePath,isProfile,handleClickOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
@@ -19,9 +19,9 @@ const Friend = ({ friendId, postId,name, subtitle, userPicturePath,isProfile,han
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
-
+  
   const isFriend = friends.find((friend) => friend._id === friendId);
-
+  console.log(isFriend)
   const patchFriend = async () => {
     const response = await AxiosInstance.patch(`users/${_id}/${friendId}`)
     const data = response.data
@@ -69,7 +69,7 @@ const Friend = ({ friendId, postId,name, subtitle, userPicturePath,isProfile,han
     
       </IconButton> :""
       }
-      {isProfile ? <IconButton onClick={()=>handleClickOpen({postId:postId,type:"post"})}>
+      {isProfile && isUser ? <IconButton onClick={()=>handleClickOpen({postId:postId,type:"post"})}>
         <SettingsIcon/>
       </IconButton> : ""}
 
