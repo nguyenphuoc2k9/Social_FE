@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dropzone from "react-dropzone";
 import FlexBetween from './FlexBetween.jsx';
-import { setPost } from '../state/index.js';
+import { setPost,setPosts } from '../state/index.js';
 import {
   Box,
   Divider,
@@ -36,6 +36,12 @@ export default function FormDialog({open,user,type,setUser,handleClose}) {
   const dispatch = useDispatch()
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
+  const handleDeletePost = async ()=>{
+    const response = await AxiosInstance.delete(`/posts/${type.postId}/delete`)
+    const data =response.data
+    dispatch(setPosts({posts:data}))
+    handleClose()
+  }
   return (
     <React.Fragment>
       <Dialog
@@ -242,8 +248,9 @@ export default function FormDialog({open,user,type,setUser,handleClose}) {
           
         </DialogContent>
         <DialogActions>
+          {type.type=="post"? <Button onClick={handleDeletePost}>Delete</Button>:""}
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
+          <Button type="submit">Submit</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
