@@ -2,7 +2,7 @@ import axios from "axios"
 import {store} from "../state/config.js"
 import { setLogin,setLogout } from "../state"
 export const AxiosInstance = axios.create({
-    baseURL:import.meta.VITE_BASE_URL || "http://localhost:4000/",
+    baseURL:import.meta.env.VITE_BASE_URL || "http://localhost:4000/",
     timeout:10000
 })
 AxiosInstance.interceptors.request.use((config)=>{
